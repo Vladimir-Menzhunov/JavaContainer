@@ -1,4 +1,5 @@
 import org.junit.Assert;
+import org.junit.jupiter.api.parallel.Execution;
 
 
 class ContainerTest {
@@ -27,8 +28,23 @@ class ContainerTest {
     public void remove() {
         Container<Integer> con = new Container<Integer>();
         con.add(1);
-        Assert.assertEquals(1, con.remove(0).intValue());
+        con.add(2);
+        con.add(3);
+        con.remove(2);
+        con.remove(1);
         con.remove(0);
+        Assert.assertTrue(con.isEmpty());
+    }
+
+    @org.junit.jupiter.api.Test
+    public void removeTwo() {
+        Container<Integer> con = new Container<Integer>();
+        con.add(1);
+        con.add(2);
+        con.add(3);
+        con.remove();
+        con.remove();
+        con.remove();
         Assert.assertTrue(con.isEmpty());
     }
 
@@ -108,16 +124,18 @@ class ContainerTest {
         Container<Integer> con = new Container<Integer>();
         con.add(1);
         con.add(2);
-        con.add(2);
+        con.add(3);
         con.remove();
         con.remove();
         con.remove();
         Assert.assertEquals(0, con.size());
+        Assert.assertTrue(con.isEmpty());
         con.add(2);
         con.add(2);
         con.remove();
         con.remove();
         Assert.assertEquals(0, con.size());
+        Assert.assertTrue(con.isEmpty());
     }
 
     @org.junit.jupiter.api.Test
@@ -128,10 +146,12 @@ class ContainerTest {
         con.add(2);
         con.clear();
         Assert.assertEquals(0, con.size());
+        Assert.assertTrue(con.isEmpty());
         con.add(2);
         con.add(2);
         con.clear();
         Assert.assertEquals(0, con.size());
+        Assert.assertTrue(con.isEmpty());
     }
 
     @org.junit.jupiter.api.Test
@@ -145,5 +165,22 @@ class ContainerTest {
         conSrt.add("Hello");
         conSrt.add("Bye");
         Assert.assertTrue(conSrt.contains("Hello"));
+        Assert.assertFalse(conSrt.contains("Ho"));
     }
+
+    @org.junit.jupiter.api.Test
+    public void rangeCheck() {
+        Container<Integer> con = new Container<Integer>();
+        con.add(1);
+        con.add(2);
+        con.add(2);
+        Assert.assertTrue(con.rangeCheck(3));
+        Assert.assertEquals(3, con.size());
+        con.add(3);
+        con.add(4);
+        Assert.assertTrue(con.rangeCheck(5));
+        Assert.assertEquals(5, con.size());
+    }
+
+
 }

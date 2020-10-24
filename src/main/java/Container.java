@@ -1,7 +1,7 @@
 import java.util.*;
+@SuppressWarnings("unchecked")
 
-
-public class Container <T> implements List<T> {
+public class Container <T> {
 
     private Object[] arr;
     private int size;
@@ -11,36 +11,47 @@ public class Container <T> implements List<T> {
         arr = new Object[size];
     }
 
+    /**
+     * Возвращает элемент по заданному индексу.
+     * Получает Object элемент преобразует его к типу Т, возвращает элемент.
+     * @param i - индекс полученного элемента
+     * @return - возвращает полученный элемент
+     * @throws - выбрасывает исключение IndexOutOfBoundsException
+     */
+
     public T get(int i) {
         try {
-            if (i < size && i >= 0) {
-                @SuppressWarnings("unchecked") final T e = (T) arr[i];
-                return e;
-            } else throw new Exception();
-        } catch (Exception E) {
+            rangeCheck(i);
+            @SuppressWarnings("unchecked") final T e = (T) arr[i];
+            return e;
+        } catch (IndexOutOfBoundsException E) {
             System.out.println("index don't right");
         }
         return null;
     }
 
-    @Override
+    /**
+     * Инициализирует элемент с заданным индексом, заданным значением.
+     * @param index - индекс элемента, который нужно заменить
+     * @param element - задаваемое значение для элемента
+     * @return - возвращает эелемент, который был до замены.
+     */
+
     public T set(int index, T element) {
         rangeCheck(index);
         T temp = (T) arr[index];
         arr[index] = element;
         return temp;
     }
+    /**
+     * Удаляет элемент в указанной позиции в списке.
+     * Создаёт новый массив в котором указаны все элементы кроме элемента с указаным индексом.
+     * Возвращает удаленный элемент.
+     * @param index - индекс элемента, который будет удален
+     * @return - возвращает удалённый эелемент
+     * @throws - возвращает IndexOutOfBoundsException, если мы вышли за пределы массива.
+     */
 
-    @Override
-    public void add(int index, T element) {
-        rangeCheck(index);
-        T temp = (T) arr[index];
-        arr[index] = element;
-        size++;
-
-    }
-
-    @Override
     public T remove(int index) {
         T delEl = null;
         try {
@@ -57,46 +68,45 @@ public class Container <T> implements List<T> {
                 indexTemp++;
             }
             arr = arrTemp;
-
         } catch (IndexOutOfBoundsException e) {
             System.out.println("index don't right");
         }
         return delEl;
     }
 
+    /**
+     * Удаляет крайний элемент справа.
+     * @return - возвращает удаленный элемент.
+     */
     public T remove() {
-        T delEl = null;
-        try {
-            rangeCheck(size - 1);
-            size--;
-            Object[] arrTemp = new Object[size];
-            int indexTemp = 0;
-            for (int ind = 0; ind < size + 1; ind++) {
-                if (ind == size - 1) {
-                    delEl = (T) arr[ind];
-                    continue;
-                }
-                arrTemp[indexTemp] = arr[ind];
-                indexTemp++;
-            }
-            arr = arrTemp;
-
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("index don't right");
-        }
-        return delEl;
+        return remove(size - 1);
     }
 
-    private void rangeCheck(int index) {
-        if (index >= size)
+    /**
+     * Проверяет индекс на доступ
+     * @param index - проверяемы индекс
+     * @throws IndexOutOfBoundsException
+     */
+    public boolean rangeCheck(int index) {
+        if (index > size - 1)
             throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+        return true;
     }
 
+    /**
+     * Возвращает информацию об индексе, который не вошёл в массив
+     * @param index - печатает индек который
+     * @return - возвращает строку информации
+     */
     private String outOfBoundsMsg(int index) {
         return "Index: "+index+", Size: "+ size;
     }
 
-    @Override
+    /**
+     * Возвращает первый индекс объекта, если данный объект существует.
+     * @param o - передаваемый объект
+     * @return - возвращает индекс объекта
+     */
     public int indexOf(Object o) {
         for(int i = 0; i < size; i++) {
             if (o.equals(arr[i])) return i;
@@ -104,7 +114,11 @@ public class Container <T> implements List<T> {
         return -1;
     }
 
-    @Override
+    /**
+     * Возвращает последнюю позицию объекта, если он существует.
+     * @param o - зававаемый объект
+     * @return - возвращает последный индекс заданного объекта
+     */
     public int lastIndexOf(Object o) {
         int last = -1;
         for(int i = 0; i < size; i++) {
@@ -113,43 +127,29 @@ public class Container <T> implements List<T> {
         return last;
     }
 
-    @Override
-    public ListIterator<T> listIterator() {
-        return null;
-    }
+    /**
+     * Возвращает размер массива.
+     * Массив инициализирован так, что размер его всегда на 1 ячейку больше, чем хранимых элементов в нем, поэтому мы от размера отнимаем 1.
+     * @return - возвращет размер массива
+     */
 
-    @Override
-    public ListIterator<T> listIterator(int index) {
-        return null;
-    }
-
-
-    @Override
-    public List<T> subList(int fromIndex, int toIndex) {
-        return null;
-    }
-
-    @Override
     public int size() {
         return size - 1;
     }
 
-    @Override
+    /**
+     * Проверяет наличие элементов в массиве.
+     * @return - возвращает boolean (true - пуст), (false - есть элементы)
+     */
     public boolean isEmpty() {
-        return size == 0;
+        return size - 1 == 0;
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        return (T) o == (T) this;
-//    }
-
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    @Override
+    /**
+     * Проверяет существует ли элемент в массиве равный заданному
+     * @param o - проверяемый объект
+     * @return - возвращает результат
+     */
     public boolean contains(Object o) {
         for(Object x : arr) {
             if (o.equals(x)) {
@@ -159,64 +159,21 @@ public class Container <T> implements List<T> {
         return false;
     }
 
-    @Override
-    public Iterator<T> iterator() {
-        return null;
-    }
-
-
-    @Override
-    public Object[] toArray() {
-        return new Object[0];
-    }
-
-    @Override
-    public <T1> T1[] toArray(T1[] a) {
-        return null;
-    }
-
-    @Override
-    public boolean add(T value) {
+    /**
+     * Добавляет элемент в конец массива.
+     * @param value - добавляемы параметр
+     */
+    public void add(T value) {
         arr[size - 1] = value;
         size++;
         Object[] arrTemp = new Object[size];
         System.arraycopy(arr, 0, arrTemp, 0, size - 1);
         arr = arrTemp;
-        return true;
     }
 
-    @Override
-    public boolean remove(Object o) {
-        return false;
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> c) {
-        return false;
-    }
-
-    @Override
-    public boolean addAll(Collection<? extends T> c) {
-        return false;
-    }
-
-    @Override
-    public boolean addAll(int index, Collection<? extends T> c) {
-        return false;
-    }
-
-    @Override
-    public boolean removeAll(Collection<?> c) {
-        return false;
-    }
-
-    @Override
-    public boolean retainAll(Collection<?> c) {
-        return false;
-    }
-
-
-    @Override
+    /**
+     * Очищает массив от элементов.
+     */
     public void clear() {
         while (size != 1) {
             remove();
